@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
     if (renderer == nullptr)
     {
         std::cout << "SDL_createRenderer Error: " << SDL_GetError() << std::endl;
-        SDL_DestroyWindow(window);
+        cleanup(window);
         SDL_Quit();
         return 1;
     }
@@ -49,20 +49,18 @@ int main(int argc, char *argv[])
     if (image == nullptr)
     {
         std::cout << "SDL_LoadBMP Error: " << SDL_GetError() << std::endl;
-        SDL_DestroyRenderer(renderer);
-        SDL_DestroyWindow(window);
+        cleanup(renderer, window);
         SDL_Quit();
         return 1;
     }
 
     // 5.创建Texture(纹理)
     SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, image);
-    SDL_FreeSurface(image);
+    cleanup(image);
     if (texture == nullptr)
     {
         std::cout << "SDL_CreateTextureFromSurface Error: " << SDL_GetError() << std::endl;
-        SDL_DestroyRenderer(renderer);
-        SDL_DestroyWindow(window);
+        cleanup(renderer, window);
         SDL_Quit();
         return 1;
     }
@@ -81,9 +79,7 @@ int main(int argc, char *argv[])
     }
     
     // 7.清理
-    SDL_DestroyTexture(texture);
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
+    cleanup(texture, renderer, window);
     SDL_Quit();
 
     return 0;
